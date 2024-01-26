@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { handleHashPassword, handleMatchPassword } = require("../utils");
 
 const userModelSchema = new mongoose.Schema({
   userName: {
@@ -28,6 +29,19 @@ const userModelSchema = new mongoose.Schema({
     maxLength: 50,
   },
 });
+
+userModelSchema.pre("save", async function (next) {
+  const protectedPassword = await handleHashPassword(this.password);
+  this.password = protectedPassword;
+  next();
+});
+
+userModelSchema.methods.matchPassword = function (
+  providedPassword,
+  hashedPassword
+) {
+  return handleMatchPassword(providedPassword, hashedPassword);
+};
 
 const User = mongoose.model("User", userModelSchema);
 
