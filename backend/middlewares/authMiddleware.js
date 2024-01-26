@@ -11,7 +11,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({
+      return res.status(403).json({
         message: "You are not logged in. Please login to get access.",
       });
     }
@@ -21,7 +21,7 @@ const authMiddleware = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    return res.status(401).json({
+    return res.status(403).json({
       message: "You are not logged in. Please login to get access.",
     });
   }
